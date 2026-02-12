@@ -9,7 +9,7 @@
   <meta name="description" content="A once-in-a-lifetime Valentine moment — crafted just for you." />
 
   <meta property="og:title" content="💕 A Moment Just For You 💕" />
-  <meta property="og:description" content="Tap to begin… (bring tissues 😭💖)" />
+  <meta property="og:description" content="A little love letter, just for you." />
   <meta property="og:type" content="website" />
 
   <title>💕 A Moment Just For You 💕</title>
@@ -56,7 +56,7 @@
       overflow-x:hidden;
       color:var(--ink);
       background: radial-gradient(1200px 800px at 20% 20%, rgba(255,255,255,0.55), rgba(255,255,255,0) 55%),
-                  linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 22%, #FFD6E0 44%, #FFC2D4 66%, #FFB6C1 84%, #FFA6C9 100%);
+                  linear-gradient(135deg, #FFF8F2 0%, #FFF0E8 18%, #FFE8E0 36%, #FFE0D8 54%, #FFD6D0 72%, #FFCCC8 90%, #FFC2C0 100%);
       background-attachment: fixed;
       touch-action: pan-y;
     }
@@ -462,6 +462,28 @@
 
     /* iOS rubber-band safe */
     .no-select{ user-select:none; -webkit-user-select:none; }
+
+    /* Love letter aesthetic */
+    .letter-bg{
+      background: linear-gradient(170deg, #FFF8F0 0%, #FFF0E6 30%, #FFE8E0 60%, #FFE0D8 100%);
+      border: 1px solid rgba(200, 160, 130, 0.25);
+      box-shadow: 0 8px 40px rgba(180, 120, 90, 0.10), inset 0 0 80px rgba(255,240,230,0.5);
+    }
+    .tenor-gif{
+      border-radius: 16px;
+      max-width: 180px;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+      filter: drop-shadow(0 4px 12px rgba(255,105,180,0.18));
+    }
+    .tenor-gif-sm{
+      max-width: 120px;
+    }
+    .wax-seal{
+      font-size: 48px;
+      filter: drop-shadow(0 3px 10px rgba(180,60,60,0.2));
+    }
   </style>
 </head>
 <body class="no-select">
@@ -471,9 +493,9 @@
   <!-- Loading -->
   <div id="loading" class="bg-animate">
     <div class="card">
-      <div class="text-7xl beat">💖</div>
+      <img src="https://media.tenor.com/odyVsZbC-OYAAAAM/heart.gif" alt="Animated heart" class="tenor-gif beat" style="max-width:100px;" onerror="this.style.display='none';document.getElementById('loadingHeartFallback').style.display='block';">
+      <div id="loadingHeartFallback" class="text-7xl beat" style="display:none;">💖</div>
       <div class="mt-6 text-white/95 tracking-[.28em] uppercase text-sm sm:text-base font-light">Preparing something special…</div>
-      <div class="mt-3 text-white/90 text-xs sm:text-sm">Please don’t blink 😌</div>
       <div class="mt-6">
         <div class="h-2 rounded-full bg-white/25 overflow-hidden">
           <div id="loadingFill" class="h-2 rounded-full" style="width:0%; background:linear-gradient(90deg, rgba(255,255,255,0.85), rgba(255,255,255,0.45));"></div>
@@ -486,13 +508,13 @@
   <!-- Tap to begin overlay -->
   <div id="startOverlay">
     <div class="card glass-strong">
-      <div class="text-5xl">🌹</div>
+      <img src="https://media.tenor.com/SNL9_xhZl9oAAAAi/love-letter.gif" alt="Love letter" class="tenor-gif" style="max-width:80px;" onerror="this.outerHTML='<div class=\'text-5xl\'>💌</div>';">
       <h2 class="mt-4 playfair text-3xl sm:text-4xl font-extrabold" style="color: var(--pink-3);">
-        A Moment Just For You
+        A Letter For You
       </h2>
       <p class="mt-3 text-base sm:text-lg muted">
         Tap <span class="font-semibold">Begin</span> when you’re ready.
-        <span class="block mt-1">Music is optional — you’re in control. 🎵</span>
+        <span class="block mt-1">Music is optional 🎵</span>
       </p>
 
       <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
@@ -501,8 +523,7 @@
       </div>
 
       <p class="mt-5 text-xs muted">
-        Tip: If you’re on mobile, turn your volume up a little (if you want music).  
-        If you prefer fewer animations, enable “Calm mode” anytime.
+        Turn your volume up for the full experience.
       </p>
     </div>
   </div>
@@ -536,16 +557,17 @@
         <div class="glass-strong">
           <!-- Steps -->
           <section id="step1" class="step active">
+            <img src="https://media.tenor.com/fco-_GCUbEAAAAAM/hearts.gif" alt="Floating hearts" class="tenor-gif tenor-gif-sm mb-4" onerror="this.style.display='none';">
             <h1 class="stepTitle playfair font-extrabold text-center">
-              Will you take a tiny journey with me? 💌
+              A little journey, just for you 💌
             </h1>
             <p class="mt-4 text-center text-lg sm:text-xl cormorant sub italic">
-              <span id="quoteText">"You are my today and all of my tomorrows."</span>
+              <span id="quoteText">“You are my today and all of my tomorrows.”</span>
             </p>
 
             <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
               <button id="s1Yes" class="tap primary">Let’s go 💖</button>
-              <button id="s1No"  class="tap secondary">Not yet… 😳</button>
+              <button id="s1No"  class="tap secondary">Not yet…</button>
             </div>
 
             <div class="dots" aria-label="Progress">
@@ -553,22 +575,19 @@
               <div class="dot" id="dot2"></div>
               <div class="dot" id="dot3"></div>
             </div>
-
-            <p class="mt-6 text-center text-xs sm:text-sm muted">
-              P.S. If you ever want to relive this later, it remembers your progress.
-            </p>
           </section>
 
           <section id="step2" class="step">
+            <img src="https://media.tenor.com/gHfFPJnrVNoAAAAM/love-you-heart.gif" alt="Love heart" class="tenor-gif tenor-gif-sm mb-4" onerror="this.style.display='none';">
             <h2 class="stepTitle playfair font-extrabold text-center">
-              One promise… just one 😊
+              One tiny promise
             </h2>
             <p class="mt-5 text-center text-xl sm:text-2xl cormorant sub">
-              Do you promise to laugh at my bad jokes forever? 😄
+              Will you choose us, every single day?
             </p>
 
             <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <button id="s2Yes" class="tap primary">Of course! 😂❤️</button>
+              <button id="s2Yes" class="tap primary">Always ❤️</button>
               <button id="s2No"  class="tap secondary">Hmm… maybe</button>
             </div>
 
@@ -577,27 +596,27 @@
               <div class="dot active" id="dot2b"></div>
               <div class="dot" id="dot3b"></div>
             </div>
-
-            <p class="mt-6 text-center text-xs sm:text-sm muted">
-              No pressure. But… my heart is already smiling. 💗
-            </p>
           </section>
 
           <section id="step3" class="step">
             <h2 class="stepTitle playfair font-extrabold text-center">
-              Okay… here it is. 💍
+              Here goes everything…
             </h2>
 
             <div class="mt-6 text-center text-lg sm:text-xl md:text-2xl cormorant sub leading-relaxed">
               <p>
                 <span id="herNameInline" class="font-semibold" style="color: var(--pink-3);">My Love</span>,<br>
-                you’re my favorite notification,<br class="hidden sm:block">
-                my safest place,<br class="hidden sm:block">
-                and the best part of every single day.
+                you are my calm in the chaos,<br class="hidden sm:block">
+                my warmth on cold days,<br class="hidden sm:block">
+                and the reason I smile for no reason at all.
               </p>
               <p class="mt-5 playfair font-bold text-2xl sm:text-3xl md:text-4xl" style="color: var(--pink-3);">
                 Will you be my Valentine? 💕
               </p>
+            </div>
+
+            <div class="mt-4 flex justify-center">
+              <img src="https://media.tenor.com/mIxXyfdsrqMAAAAM/cute-i-love-you.gif" alt="Cute love" class="tenor-gif" style="max-width:150px;" onerror="this.style.display='none';">
             </div>
 
             <div class="mt-7">
@@ -606,7 +625,7 @@
 
             <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button id="finalYes" class="tap primary text-xl sm:text-2xl">YES, forever! 💞</button>
-              <button id="finalNo" class="tap secondary text-xl sm:text-2xl">No 😢</button>
+              <button id="finalNo" class="tap secondary text-xl sm:text-2xl">Not yet</button>
             </div>
 
             <div class="dots">
@@ -615,14 +634,12 @@
               <div class="dot active" id="dot3c"></div>
             </div>
 
-            <p class="mt-6 text-center text-xs sm:text-sm muted">
-              Hint: Press <span class="font-semibold">Y</span> or <span class="font-semibold">Enter</span> to say yes (desktop).
-            </p>
+
           </section>
         </div>
 
         <div class="mt-4 text-center text-xs muted">
-          Made with love · <span id="fromLine">from someone who adores you</span>
+          Written with love · <span id="fromLine">from someone who adores you</span>
         </div>
       </div>
     </main>
@@ -635,18 +652,18 @@
     <div id="fxHeartRain" class="fixed inset-0 pointer-events-none"></div>
 
     <div class="glass-strong w-full max-w-4xl p-7 sm:p-10 text-center relative">
-      <div class="text-6xl sm:text-7xl beat" aria-hidden="true">💖</div>
+      <img src="https://media.tenor.com/RJXM99kdbRIAAAAM/cute-hearts.gif" alt="Celebration hearts" class="tenor-gif beat" style="max-width:120px;" onerror="this.outerHTML='<div class=\'text-6xl sm:text-7xl beat\' aria-hidden=\'true\'>💖</div>';">
       <h1 class="mt-4 playfair text-4xl sm:text-6xl md:text-7xl font-black" style="color: var(--pink-3); text-shadow: 0 2px 26px rgba(255,105,180,0.25);">
-        I KNEW IT! 🥹💞
+        You said yes! 💞
       </h1>
 
       <p class="mt-6 text-xl sm:text-2xl md:text-3xl cormorant leading-relaxed" style="color: var(--pink-4);">
         <span class="font-semibold">My love</span>, you’ve just made me the happiest person alive.  
-        <span class="block mt-2">I promise to cherish you, annoy you with love, and hold your hand through every adventure — forever.</span>
+        <span class="block mt-2">I promise to cherish every moment with you — today, tomorrow, and always.</span>
       </p>
 
       <p class="mt-7 playfair text-2xl sm:text-3xl md:text-4xl font-bold" style="color: var(--pink-3);">
-        Happy Valentine’s Day, <span id="herNameCelebration">my everything</span>. 🌹❤️
+        Happy Valentine’s Day, <span id="herNameCelebration">my everything</span>. 🌹
       </p>
 
       <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
@@ -656,7 +673,7 @@
       </div>
 
       <p class="mt-5 text-xs muted">
-        If “Save Memory” doesn’t work on your device, just take a screenshot — it’s still perfect. ✨
+        Take a screenshot to keep this moment forever.
       </p>
     </div>
   </div>
@@ -711,11 +728,10 @@
 
     // ---------- Playful “No” messages ----------
     const NO_MESSAGES = [
-      "Are you sure? Please reconsider 🥺",
+      "Are you sure? 🥺",
       "Pretty please? 💕",
-      "My heart can’t handle “no”… 💔",
       "One more chance? 🌹",
-      "Okay okay… but the YES button is right there 😭💖"
+      "I’ll wait for you 💖"
     ];
 
     // ---------- State ----------
@@ -1253,26 +1269,6 @@
 
       const msgIndex = clamp(state.noCount - 1, 0, NO_MESSAGES.length - 1);
       showModal(NO_MESSAGES[msgIndex]);
-
-      // Make YES feel more “obvious” but still tasteful
-      const yes = finalYes;
-      const base = 18; // px-ish baseline
-      const bump = clamp(state.noCount, 0, 8) * 1.6;
-      yes.style.transform = `scale(${1 + bump/20})`;
-
-      // After a few tries, the No button becomes shy (moves away)
-      if (state.noCount >= 4){
-        const offsetX = Math.random()*180 - 90;
-        const offsetY = Math.random()*120 - 60;
-        buttonEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        buttonEl.style.transition = "transform 0.35s ease";
-      }
-      if (state.noCount >= 8){
-        buttonEl.style.opacity = "0.3";
-      }
-      if (state.noCount >= 11){
-        buttonEl.style.display = "none";
-      }
     }
 
     // ---------- Init content ----------
@@ -1333,8 +1329,9 @@
     s2Yes.addEventListener("click", () => showStep(3));
 
     // “No” in step 1/2 still progresses, but playfully nudges
-    s1No.addEventListener("click", () => { showModal("Okay okay… but you’ll love what’s next 🥹"); setTimeout(() => showStep(2), 260); });
-    s2No.addEventListener("click", () => { showModal("A “maybe” counts as a yes in my heart 😭💖"); setTimeout(() => showStep(3), 260); });
+    // Brief delay for smooth step transition
+    s1No.addEventListener("click", () => { setTimeout(() => showStep(2), 100); });
+    s2No.addEventListener("click", () => { setTimeout(() => showStep(3), 100); });
 
     finalYes.addEventListener("click", () => showCelebration());
     finalNo.addEventListener("click", () => playfulNo(finalNo));
@@ -1364,8 +1361,7 @@
     runLoader();
 
     // Console Easter egg
-    console.log("%c💖 Secret note:", "font-size:18px; font-weight:bold; color:#FF1493;");
-    console.log("%cIf you’re reading this… you’re the kind of person who notices tiny things. That’s adorable. 🌹", "color:#C71585;");
+    console.log("%c💖 Made with love.", "font-size:18px; font-weight:bold; color:#FF1493;");
   </script>
 </body>
 </html>
