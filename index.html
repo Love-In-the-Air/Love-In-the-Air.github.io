@@ -1329,6 +1329,7 @@
     s2Yes.addEventListener("click", () => showStep(3));
 
     // “No” in step 1/2 still progresses, but playfully nudges
+    // Brief delay for smooth step transition
     s1No.addEventListener("click", () => { setTimeout(() => showStep(2), 100); });
     s2No.addEventListener("click", () => { setTimeout(() => showStep(3), 100); });
 
