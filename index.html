@@ -98,7 +98,6 @@
       border-radius: 999px;
       padding: 10px 14px;
       box-shadow: 0 10px 30px rgba(255, 105, 180, 0.12);
-      position: relative;
       user-select:none;
     }
 
@@ -1313,7 +1312,7 @@
         photoEl.src = CONFIG.photo;
         photoEl.onerror = function() {
           this.style.display = 'none';
-          console.log('Photo failed to load');
+          console.error('Photo failed to load:', CONFIG.photo);
         };
         photoEl.onload = function() {
           photoEl.classList.remove("hidden");
@@ -1406,6 +1405,9 @@
         }
       } catch (err) {
         console.log('Share failed:', err);
+        if (err.name !== 'AbortError') {
+          showNotification('Unable to share at this time');
+        }
       }
     });
 
