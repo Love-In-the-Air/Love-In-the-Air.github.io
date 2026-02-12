@@ -285,8 +285,14 @@
     .step{
       display:none;
       padding: 22px;
+      animation: fadeInUp 0.6s ease-out;
     }
     .step.active{ display:block; }
+    
+    @keyframes fadeInUp{
+      from{ opacity:0; transform: translateY(20px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
 
     .stepTitle{
       font-size: clamp(28px, 6vw, 54px);
@@ -394,6 +400,25 @@
       10%{ opacity:1; }
       90%{ opacity:1; }
       100%{ transform: translateY(110vh) rotate(1080deg) scale(.5); opacity:0; }
+    }
+
+    /* Success notification */
+    .notification{
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--glass-strong);
+      padding: 12px 24px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      z-index: 5000;
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .notification.show{
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
 
     /* Reduced motion support */
@@ -553,6 +578,9 @@
       </div>
 
       <div class="controls">
+        <button id="backBtn" class="pill hidden" title="Go back">
+          <span style="font-size:18px;">←</span>
+        </button>
         <button id="musicToggle" class="pill text-sm font-semibold" type="button" aria-label="Toggle music">
           🔇 Music
         </button>
@@ -679,6 +707,11 @@
       <p class="mt-8 text-xs muted">
         Take a screenshot to keep this moment forever.
       </p>
+      
+      <div class="mt-6 flex justify-center gap-3">
+        <button id="shareBtn" class="tap secondary text-sm">Share this moment 💕</button>
+        <button id="copyLinkBtn" class="tap secondary text-sm">Copy link 🔗</button>
+      </div>
     </div>
   </div>
 
@@ -697,6 +730,9 @@
   <audio id="bgMusic" loop preload="auto">
     <source src="https://assets.codepen.io/831041/valentine-romantic-piano.mp3" type="audio/mpeg" />
   </audio>
+
+  <!-- Notification toast -->
+  <div id="notification" class="notification"></div>
 
   <noscript>
     <div style="padding:16px; background:#fff; color:#000;">
@@ -798,6 +834,9 @@
     const fxHeartRain   = document.getElementById("fxHeartRain");
 
     const modalOverlay  = document.getElementById("modalOverlay");
+    const backBtn       = document.getElementById("backBtn");
+    const shareBtn      = document.getElementById("shareBtn");
+    const copyLinkBtn   = document.getElementById("copyLinkBtn");
     const modalText     = document.getElementById("modalText");
     const modalOk       = document.getElementById("modalOk");
 
@@ -1123,7 +1162,27 @@
       if (state.step === 2) document.getElementById("dot2b").classList.add("active");
       if (state.step === 3) document.getElementById("dot3c").classList.add("active");
 
+      // Show/hide back button based on step
+      if (state.step > 1) {
+        backBtn.classList.remove("hidden");
+      } else {
+        backBtn.classList.add("hidden");
+      }
+
       setProgress();
+    }
+
+    // ---------- Notification system ----------
+    const notification = document.getElementById("notification");
+    let notificationTimer;
+    
+    function showNotification(msg, duration = 3000){
+      notification.textContent = msg;
+      notification.classList.add("show");
+      clearTimeout(notificationTimer);
+      notificationTimer = setTimeout(() => {
+        notification.classList.remove("show");
+      }, duration);
     }
 
     // ---------- Modal ----------
@@ -1251,7 +1310,13 @@
 
       if (CONFIG.photo){
         photoEl.src = CONFIG.photo;
-        photoEl.classList.remove("hidden");
+        photoEl.onerror = function() {
+          this.style.display = 'none';
+          console.error('Photo failed to load:', CONFIG.photo);
+        };
+        photoEl.onload = function() {
+          photoEl.classList.remove("hidden");
+        };
       }
 
       setDateLine();
@@ -1300,11 +1365,60 @@
 
     // “No” in step 1/2 still progresses, but playfully nudges
     // Brief delay for smooth step transition
-    s1No.addEventListener("click", () => { setTimeout(() => showStep(2), 100); });
-    s2No.addEventListener("click", () => { setTimeout(() => showStep(3), 100); });
+    const STEP_NO_MESSAGES = [
+      "But... don't you want to know what's next? 🥺",
+      "Are you absolutely sure? There's something special ahead! 💕"
+    ];
+    s1No.addEventListener("click", () => { 
+      showModal(STEP_NO_MESSAGES[0]); 
+      setTimeout(() => showStep(2), 2200);
+    });
+    s2No.addEventListener("click", () => { 
+      showModal(STEP_NO_MESSAGES[1]); 
+      setTimeout(() => showStep(3), 2200);
+    });
 
     finalYes.addEventListener("click", () => showCelebration());
     finalNo.addEventListener("click", () => playfulNo(finalNo));
+
+    // Back button functionality
+    backBtn.addEventListener("click", () => {
+      if (state.step > 1) {
+        showStep(state.step - 1);
+      }
+    });
+
+    // Share functionality
+    shareBtn.addEventListener("click", async () => {
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: '💕 A Valentine Moment',
+            text: 'Someone created a special Valentine message!',
+            url: window.location.href
+          });
+          showNotification("Thanks for sharing the love! 💖");
+        } else {
+          // Fallback: copy to clipboard
+          await navigator.clipboard.writeText(window.location.href);
+          showNotification("Link copied to clipboard! 💕");
+        }
+      } catch (err) {
+        console.log('Share failed:', err);
+        if (err.name !== 'AbortError') {
+          showNotification('Unable to share at this time');
+        }
+      }
+    });
+
+    copyLinkBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        showNotification("Link copied! Share it with your loved ones 💕");
+      } catch (err) {
+        showModal("Please copy this link manually: " + window.location.href);
+      }
+    });
 
     // Keyboard support (desktop)
     document.addEventListener("keydown", (e) => {
