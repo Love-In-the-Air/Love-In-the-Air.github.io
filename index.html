@@ -25,8 +25,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Cormorant+Garamond:wght@300;400;600;700&family=Raleway:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-  <!-- Optional: html2canvas for "Save Memory" (fallback is screenshot instructions) -->
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
 
   <style>
     :root{
@@ -420,6 +419,17 @@
       border-radius: 999px;
       font-weight: 700;
       letter-spacing: 0.5px;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    }
+
+    /* Button size enhancing pulse when Yes grows */
+    @keyframes btnPulse{
+      0%{ transform: scale(1); }
+      50%{ transform: scale(1.12); }
+      100%{ transform: scale(1); }
+    }
+    .btn-pulse{
+      animation: btnPulse .4s ease;
     }
 
     /* Heart cursor trail (desktop only) */
@@ -666,13 +676,7 @@
         Happy Valentine’s Day, <span id="herNameCelebration">my everything</span>. 🌹
       </p>
 
-      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-        <button id="saveBtn" class="tap primary">📸 Save Memory</button>
-        <button id="shareBtn" class="tap secondary">💌 Share</button>
-        <button id="reliveBtn" class="tap secondary">🔄 Relive</button>
-      </div>
-
-      <p class="mt-5 text-xs muted">
+      <p class="mt-8 text-xs muted">
         Take a screenshot to keep this moment forever.
       </p>
     </div>
@@ -734,6 +738,12 @@
       "I’ll wait for you 💖"
     ];
 
+    // Button size animation constants
+    const YES_GROW_INCREMENT = 0.12;
+    const YES_MAX_SCALE      = 1.8;
+    const NO_SHRINK_DECREMENT = 0.08;
+    const NO_MIN_SCALE        = 0.5;
+
     // ---------- State ----------
     const STATE_KEY = "val_master_state_v1";
     const state = {
@@ -782,9 +792,6 @@
     const celebration   = document.getElementById("celebration");
     const herNameCelebr = document.getElementById("herNameCelebration");
 
-    const saveBtn       = document.getElementById("saveBtn");
-    const shareBtn      = document.getElementById("shareBtn");
-    const reliveBtn     = document.getElementById("reliveBtn");
 
     const fxFireworks   = document.getElementById("fxFireworks");
     const fxConfetti    = document.getElementById("fxConfetti");
@@ -1213,59 +1220,22 @@
       vibrate(60);
     }
 
-    // ---------- Save Memory (Download) ----------
-    async function saveMemory(){
-      const card = celebration.querySelector(".glass-strong");
-      const fallback = () => alert("If download doesn’t work on your device, please take a screenshot — it’s still perfect. 💖");
-
-      if (typeof html2canvas !== "function"){
-        fallback();
-        return;
-      }
-      try{
-        const canvas = await html2canvas(card, {backgroundColor: null, scale: window.devicePixelRatio || 2});
-        const a = document.createElement("a");
-        a.href = canvas.toDataURL("image/png");
-        const safeName = (CONFIG.to || "valentine").replace(/[^a-z0-9_-]/gi,"_").slice(0,18);
-        a.download = `valentine_${safeName}.png`;
-        a.click();
-      }catch(e){
-        fallback();
-      }
-    }
-
-    // ---------- Share ----------
-    async function shareMoment(){
-      const url = window.location.href;
-      const text = `A little Valentine moment for you, ${CONFIG.to} 💖`;
-      if (navigator.share){
-        try{
-          await navigator.share({ title: "A Moment Just For You 💕", text, url });
-          return;
-        }catch(e){ /* user cancelled */ }
-      }
-      try{
-        await navigator.clipboard.writeText(url);
-        alert("Link copied! Send it with love 💌");
-      }catch(e){
-        alert("Copy this link and share it 💌\n\n" + url);
-      }
-    }
-
-    function relive(){
-      state.step = 1;
-      state.yes = false;
-      state.noCount = 0;
-      saveStateSafe();
-      celebration.style.display = "none";
-      clearCelebrationFx();
-      showStep(1);
-    }
-
     // ---------- Playful “No” logic ----------
     function playfulNo(buttonEl){
       state.noCount += 1;
       saveStateSafe();
+
+      // Grow the "Yes" button with each "No" press
+      const growFactor = 1 + state.noCount * YES_GROW_INCREMENT;
+      const scale = Math.min(growFactor, YES_MAX_SCALE);
+      finalYes.style.transform = "scale(" + scale + ")";
+      finalYes.classList.remove("btn-pulse");
+      void finalYes.offsetWidth; // reflow to restart animation
+      finalYes.classList.add("btn-pulse");
+
+      // Shrink the "No" button slightly
+      const shrink = Math.max(1 - state.noCount * NO_SHRINK_DECREMENT, NO_MIN_SCALE);
+      buttonEl.style.transform = "scale(" + shrink + ")";
 
       const msgIndex = clamp(state.noCount - 1, 0, NO_MESSAGES.length - 1);
       showModal(NO_MESSAGES[msgIndex]);
@@ -1346,9 +1316,6 @@
       }
     });
 
-    saveBtn.addEventListener("click", saveMemory);
-    shareBtn.addEventListener("click", shareMoment);
-    reliveBtn.addEventListener("click", relive);
 
     // React to resize (recreate background for density)
     window.addEventListener("resize", () => {
