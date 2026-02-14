@@ -84,7 +84,6 @@ function ValentineApp() {
         setIsMusicPlaying(true);
       }).catch(() => {});
     }
-    setScreen("overlay"); // triggers fade
     setTimeout(() => {
       if (isProposalMode.current) {
         setScreen("greeting");
@@ -352,9 +351,7 @@ function ValentineApp() {
     const centerY = windowHeight / 2;
     const excludeW = Math.min(600, windowWidth * 0.8);
     const excludeH = Math.min(500, windowHeight * 0.6);
-    let px: number, py: number, safe = false, attempts = 0;
-    px = 20;
-    py = 20;
+    let px = 20, py = 20, safe = false, attempts = 0;
     while (!safe && attempts < 50) {
       px = Math.random() * (windowWidth - 250) + 20;
       py = Math.random() * (windowHeight - 60) + 20;
@@ -609,7 +606,7 @@ function ValentineApp() {
                   width={300}
                   height={300}
                   className="rounded-full shadow-lg mx-auto"
-                  style={{ objectFit: "fill" }}
+                  style={{ objectFit: "cover" }}
                 />
               </div>
               <h1
